@@ -3,59 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
-use App\Models\User;
 
 class PostController extends Controller
 {
+
+    public static $posts = [
+        ['id' => 0, 'title' => 'laravel', 'description' => "php_framework", 'post_creator' => 'Amira', 'created_at' => '2022-04-17 10:00:00'],
+        ['id' => 1, 'title' => 'JS', 'description' => "JavaScript", 'post_creator' => 'Amira', 'created_at' => '2022-04-17 10:26:00'],
+        ['id' => 2, 'title' => 'Welcome', 'description' => "hello", 'post_creator' => 'Emad', 'created_at' => '2022-04-17 10:29:00'],
+    ];
+
     public function index()
     {
-        //select * from posts where title = 'CSS';
-        // $filteredPosts = Post::where('title', 'CSS')->get();
-        // dd($filteredPosts);
-
-        $posts = Post::all(); //select * from posts;
-
-        // dd($posts);
-        return view('posts.index',[
-            'posts' => $posts,
+        
+        return view('posts.index', [
+            'posts' => self::$posts,
         ]);
     }
 
     public function create()
     {
-        $users = User::all();
-
-        return view('posts.create',[
-            'users' => $users,
-        ]);
+        return view('posts.create');
     }
 
     public function store()
     {
-        //get the request data
-        $data = request()->all(); //== $_POST
-
-        //store the request data into the db
-        Post::create([
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'user_id' => $data['post_creator'],
-            // 'test' => 'some value',
-            // 'test2' => 'another value',
-            // 'id' => 300,
-        ]);
-
-        //redirection to /posts
-        return to_route('posts.index');
+        return 'Stored';
+        //in lab 2
     }
 
     public function show($postId)
     {
-        // SELECT * from posts where id = 'postId';
-        // $post = Post::where('id', $postId)->first();
-        $post = Post::find($postId);
-        dd($post);
-        return $postId;
+        return view('posts.show', ["post" => self::$posts[$postId]]);
+    }
+
+    public function edit($postId)
+    {
+        return view("posts.edit", ["post" => self::$posts[$postId]]);
+    }
+
+    public function update(Request $req)
+    {
+        $request = $req->all();
+        self::$posts[$request['id']]['title'] = $request['title'];
+        self::$posts[$request['id']]['description'] = $request['description'];
+        self::$posts[$request['id']]['post_creator'] = $request['creator'];
+        return view('posts.index', [
+            'posts' => self::$posts,
+        ]);
+    }
+
+    public function delete($id)
+    {
+        return 'Deleted';
+        //in lab 2
     }
 }
