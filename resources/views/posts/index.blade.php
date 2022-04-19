@@ -21,15 +21,28 @@
         <tr>
             <td>{{ $post['id'] }}</th>
             <td>{{ $post['title'] }}</td>
-            <td>{{ $post['post_creator'] }}</td>
+            <td>{{ $post->user->name }}</td>
             <td>{{ $post['created_at'] }}</td>
             <td>
                 <a href="{{ route('posts.view', ['post' => $post['id']]) }}" class="btn btn-info">View</a>
                 <a href="{{ route('posts.edit', ['post' => $post['id']]) }}" class="btn btn-primary">Edit</a>
-                <a href="{{ route('posts.delete', ['post' => $post['id']]) }}" class="btn btn-danger">Delete</a>
+                <form style="display:inline-block;" method="POST" action="{{ route('posts.destory',['post' => $post['id']])}}">
+                @method("DELETE")
+                @csrf
+               <button onclick="return confirm('Do you want to delete this post?')" class="btn btn-danger">Delete</button>
+               </form>
+               
             </td>
         </tr>
+            
         @endforeach
+        
+            <div class="paginate">
+                {{$posts->links()}}
+             </div>
+
+       
     </tbody>
+            
 </table>
 @endsection

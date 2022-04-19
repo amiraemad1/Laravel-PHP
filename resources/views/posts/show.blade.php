@@ -15,7 +15,11 @@
     </div>
     <div class="mb-3">
         <label for="exampleFormControlTextarea1" class="form-label">Post Creator</label>
-        <input type="text" name="creator" value={{ $post['post_creator'] }} class="form-control" disabled>
+        <input type="text" name="creator" value={{ $post->user->name }} class="form-control" disabled>
+    </div>
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label">Created At</label>
+        <input type="text" name="creator" value={{ $post->created_at }} class="form-control" disabled>
     </div>
 </form>
 @endsection

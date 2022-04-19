@@ -2,60 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Response;
+use App\Http\Controllers\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class PostController extends Controller
 {
-
-    public static $posts = [
-        ['id' => 0, 'title' => 'laravel', 'description' => "php_framework", 'post_creator' => 'Amira', 'created_at' => '2022-04-17 10:00:00'],
-        ['id' => 1, 'title' => 'JS', 'description' => "JavaScript", 'post_creator' => 'Amira', 'created_at' => '2022-04-17 10:26:00'],
-        ['id' => 2, 'title' => 'Welcome', 'description' => "hello", 'post_creator' => 'Emad', 'created_at' => '2022-04-17 10:29:00'],
-    ];
-
     public function index()
     {
-        
-        return view('posts.index', [
-            'posts' => self::$posts,
-        ]);
+    
+       $posts = Post::paginate(5);
+        return view('posts.index')->with('posts', $posts);
     }
 
     public function create()
     {
-        return view('posts.create');
+        $users =  User::all();
+        return view('posts.create', [
+            'users' => $users,
+        ]);
     }
 
     public function store()
     {
-        return 'Stored';
-        //in lab 2
+        $req = request()->all();
+        Post::create([
+            'title' =>  $req['title'],
+            'description' =>  $req['description'],
+            'user_id' => $req['creator'],
+        ]);
+        return redirect()->route('posts.index')->with('success');
+        
     }
 
     public function show($postId)
     {
-        return view('posts.show', ["post" => self::$posts[$postId]]);
+        $post=post::find($postId);
+        return view("posts.show",["post"=>$post]);
     }
 
     public function edit($postId)
     {
-        return view("posts.edit", ["post" => self::$posts[$postId]]);
-    }
-
-    public function update(Request $req)
-    {
-        $request = $req->all();
-        self::$posts[$request['id']]['title'] = $request['title'];
-        self::$posts[$request['id']]['description'] = $request['description'];
-        self::$posts[$request['id']]['post_creator'] = $request['creator'];
-        return view('posts.index', [
-            'posts' => self::$posts,
+        $users = User::all();
+        $post = Post::find($postId);
+        return view('posts.edit', [
+            'post' => $post,
+            'users' => $users,
         ]);
     }
 
-    public function delete($id)
+    public function update()
     {
-        return 'Deleted';
-        //in lab 2
+        $req=request()->all();
+        post::where('id',$req['id'])->update([
+            'title'=>$req['title'],
+            'description'=>$req['description'],
+            'user_id'=>$req['creator']
+        ]);
+        return to_route('posts.index');
     }
+
+    public function delete($postId)
+    {
+        post::where('id',$postId)->delete();
+        return to_route('posts.index');
+       
+    }
+
+    public function destory($postId)
+    {
+        $post = Post::find($postId);
+        $post->delete();
+        return to_route('posts.index');
+    }
+
 }
