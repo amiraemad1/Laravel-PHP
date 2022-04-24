@@ -10,7 +10,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use App\Http\Controllers\DB;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 
 class PostController extends Controller
@@ -44,8 +44,12 @@ class PostController extends Controller
 
     public function show($postId)
     {
-        $post=post::find($postId);
-        return view("posts.show",["post"=>$post]);
+       $post = post::find($postId);
+        $users =  User::all();
+        return view("posts.show", [
+            'post' => $post,
+            'users' => $users,
+        ]);
     }
 
     public function edit($postId)

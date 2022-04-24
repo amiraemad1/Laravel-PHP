@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -28,3 +30,4 @@ Route::get('/posts/edit/{post}', [PostController::class, 'edit'])->name('posts.e
 Route::get('/posts/view/{post}', [PostController::class, 'show'])->name('posts.view');
 Route::get('/posts/delete/{post}', [PostController::class, 'delete'])->name('posts.delete');
 Route::delete('/posts/delete/{post}', [PostController::class, 'destory'])->name('posts.destory');
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
